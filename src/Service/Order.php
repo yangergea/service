@@ -7,14 +7,14 @@
  *
  * Copyright (C) 2019  玫瑰视界网络科技有限公司
  */
- namespace Service\Order;
+ namespace Service\Service;
 
  use Service\Core\AbstractAPI;
 
 /**
  * Contact Contact
  */
- Class PurchaseOrder extends AbstractAPI
+ Class Order extends AbstractAPI
  {
      const PURCHASE_ORDER_DETAIL = '/purchase/getOrderDetail';
 
@@ -26,9 +26,9 @@
         'production' => '172.17.21.169:8091'
      ];
 
-     public function __construct()
+     public function __construct($app_env)
      {
-          $this->baseUrl = self::SERVICE[env('APP_ENV')];
+          $this->baseUrl = self::SERVICE[$app_env];
      }
 
      /**

@@ -31,12 +31,11 @@ class App extends Container
         ServiceProviders\OrderServiceProvider::class,
     ];
 
-    public function __construct()
+    public function __construct($app_env)
     {
         parent::__construct();
-
+        $this->app_env = $app_env;
         $this->registerProviders();
-        $this->registerBase();
     }
     /**
      * Add a provider.
@@ -105,18 +104,8 @@ class App extends Container
     private function registerProviders()
     {
         foreach ($this->providers as $provider) {
-            $this->register(new $provider());
+            $this->register(new $provider($this->app_env));
         }
-    }
-
-    /**
-     * Register basic providers.
-     */
-    private function registerBase()
-    {
-        $this['request'] = function () {
-            return Request::createFromGlobals();
-        };
     }
 
 }

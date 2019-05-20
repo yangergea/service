@@ -10,12 +10,17 @@
 
 namespace Service\Foundation\ServiceProviders;
 
-use Service\Order\PurchaseOrder;
+use Service\Service\Order;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
 class OrderServiceProvider implements ServiceProviderInterface
 {
+    public function __construct($app_env)
+    {
+        $this->app_env = $app_env;
+    }
+
     /**
      * Registers services on the given container.
      *
@@ -26,11 +31,11 @@ class OrderServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $purchaseOrder = function ($pimple) {
-            return new PurchaseOrder();
+        $order = function ($pimple) {
+            return new Order($this->app_env);
         };
 
-        $pimple['purchaseOrder'] = $purchaseOrder;
+        $pimple['order'] = $order;
     }
 
 }
