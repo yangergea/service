@@ -8,13 +8,13 @@
  * Copyright (C) 2019  玫瑰视界网络科技有限公司
  */
 
-namespace Warehouse\Foundation\ServiceProviders;
+namespace Service\Foundation\ServiceProviders;
 
-use Warehouse\Contact\Contact;
+use Service\Order\PurchaseOrder;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-class ContactServiceProvider implements ServiceProviderInterface
+class OrderServiceProvider implements ServiceProviderInterface
 {
     /**
      * Registers services on the given container.
@@ -26,16 +26,11 @@ class ContactServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $contact = function ($pimple) {
-            return new Contact(
-                $pimple['access_token'],
-                $pimple['cache'],
-                $pimple['config']["base_url"],
-                $pimple['config']['debug']
-            );
+        $purchaseOrder = function ($pimple) {
+            return new PurchaseOrder();
         };
 
-        $pimple['contact'] = $contact;
+        $pimple['purchaseOrder'] = $purchaseOrder;
     }
 
 }

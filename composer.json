@@ -1,10 +1,10 @@
 {
-    "name": "yangerge/warehouse",
-    "description": "warehouse SDK for ofashion",
+    "name": "yangchao/service",
+    "description": "service for ole",
     "type": "library",
     "keywords": [
-        "warehouse",
-        "ofashion"
+        "service",
+        "ole"
     ],
     "require": {
         "php":">=5.6.0",
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Warehouse\\": "src/"
+            "Service\\": "src/"
         },
         "files": [
             "src/helpers.php"

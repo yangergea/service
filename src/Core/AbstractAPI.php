@@ -9,14 +9,8 @@
  */
 
 
-namespace Warehouse\Core;
+namespace Service\Core;
 
-use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Cache\FilesystemCache;
-use Warehouse\Exceptions\HttpException;
-use Warehouse\Exceptions\Exception;
-use Warehouse\Utils\Collection;
-use Warehouse\Utils\Log;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
@@ -27,7 +21,7 @@ abstract class AbstractAPI
     /**
      * Base URL
      */
-    protected $baseUrl = "https://api.growthcloud.cn";
+    protected $baseUrl = "";
 
     /**
      * Http instance.
@@ -41,14 +35,8 @@ abstract class AbstractAPI
      *
      * @var \Warehouse\Core\AccessToken
      */
-    protected $accessToken;
 
 
-    protected $cachePrefix = "Warehouse.api";
-
-    protected $apiFunction = null;
-
-    protected $debug = false;
 
     const GET = 'get';
     const POST = 'post';
@@ -59,38 +47,9 @@ abstract class AbstractAPI
      *
      * @param \EasyWeChat\Core\AccessToken $accessToken
      */
-    public function __construct(AccessToken $accessToken, Cache $cache = null, $baseUrl = null, $debug = false)
+    public function __construct()
     {
-        $this->cache = $cache;
-        $this->debug = $debug;
-        $this->setAccessToken($accessToken);
-        if (!is_null($baseUrl)) {
-            $this->setBaseUrl($baseUrl);
-        }
-    }
-
-    /**
-     * Set cache instance.
-     *
-     * @param \Doctrine\Common\Cache\Cache $cache
-     *
-     * @return AccessToken
-     */
-    public function setCache(Cache $cache)
-    {
-        $this->cache = $cache;
-
-        return $this;
-    }
-
-    /**
-     * Return the cache manager.
-     *
-     * @return \Doctrine\Common\Cache\Cache
-     */
-    public function getCache()
-    {
-        return $this->cache ?: $this->cache = new FilesystemCache(sys_get_temp_dir());
+        
     }
 
     /**
@@ -114,10 +73,6 @@ abstract class AbstractAPI
             $this->http = new Http();
         }
 
-        if (count($this->http->getMiddlewares()) === 0) {
-            $this->registerHttpMiddlewares();
-        }
-
         return $this->http;
     }
 
@@ -131,30 +86,6 @@ abstract class AbstractAPI
     public function setHttp(Http $http)
     {
         $this->http = $http;
-
-        return $this;
-    }
-
-    /**
-     * Return the current accessToken.
-     *
-     * @return \EasyWeChat\Core\AccessToken
-     */
-    public function getAccessToken()
-    {
-        return $this->accessToken;
-    }
-
-    /**
-     * Set the request token.
-     *
-     * @param \EasyWeChat\Core\AccessToken $accessToken
-     *
-     * @return $this
-     */
-    public function setAccessToken(AccessToken $accessToken)
-    {
-        $this->accessToken = $accessToken;
 
         return $this;
     }
@@ -186,55 +117,6 @@ abstract class AbstractAPI
         return new Collection($contents);
     }
 
-    /**
-     * Register Guzzle middlewares.
-     */
-    protected function registerHttpMiddlewares()
-    {
-        // access token
-        $this->http->addMiddleware($this->accessTokenMiddleware());
-        // log
-        $this->http->addMiddleware($this->logMiddleware());
-    }
-
-    /**
-     * Attache access token to request query.
-     *
-     * @return \Closure
-     */
-    protected function accessTokenMiddleware()
-    {
-        return function (callable $handler) {
-            return function (RequestInterface $request, array $options) use ($handler) {
-                if (!$this->accessToken) {
-                    return $handler($request, $options);
-                }
-
-                $field = $this->accessToken->getTokenType();
-                $token = $this->accessToken->getToken();
-                $tokenStr = "{$field} {$token}";
-                // $request = $request->withHeader("accept", "application/json");
-                $request = $request->withHeader("Authorization", $tokenStr);
-                // Log::debug(json_encode($request->getHeaders()));
-
-                return $handler($request, $options);
-            };
-        };
-    }
-
-    /**
-     * Log the request.
-     *
-     * @return \Closure
-     */
-    protected function logMiddleware()
-    {
-        return Middleware::tap(function (RequestInterface $request, $options) {
-            Log::debug("Request: {$request->getMethod()} {$request->getUri()} ".json_encode($options));
-            Log::debug('Request headers:'.json_encode($request->getHeaders()));
-        });
-    }
-
 
     /**
      * Check the array data errors, and Throw exception when the contents contains error.
@@ -254,44 +136,4 @@ abstract class AbstractAPI
         }
     }
 
-
-    /**
-     * Get cache key.
-     *
-     * @return string $this->cacheKey
-     */
-    public function getCacheKey($cacheKey = null)
-    {
-        if (!isset($cacheKey)) {
-            throw new InvalidArgumentException("Error: No cacheKey given", 1);
-        }
-        if (is_null($this->apiFunction)) {
-            throw new InvalidArgumentException("Error: no function name", 1);
-        }
-        $key = "{$this->cachePrefix}.{$this->apiFunction}.{$cacheKey}";
-        return $key;
-    }
-
-    /**
-     * Store to cache
-     */
-    public function store($cacheKey, $value, $expires = 7200)
-    {
-        if ($expires <= 0) {
-            throw new InvalidArgumentException("Error: expire time less then zero", 1);
-        }
-        Log::debug("Set Cache Key:".$this->getCacheKey($cacheKey));
-        $this->getCache()->save($this->getCacheKey($cacheKey), $value, $expires);
-        return $this;
-    }
-
-    /**
-     * Get from cache
-     */
-    public function get($cacheKey)
-    {
-        $cacheKey = $this->getCacheKey($cacheKey);
-        Log::debug("Get Object from Cache Key:".$cacheKey);
-        return $this->getCache()->fetch($cacheKey);
-    }
 }
