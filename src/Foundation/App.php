@@ -31,7 +31,7 @@ class App extends Container
         ServiceProviders\OrderServiceProvider::class,
     ];
 
-    public function __construct($config)
+    public function __construct()
     {
         parent::__construct();
 

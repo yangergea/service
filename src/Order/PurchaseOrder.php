@@ -7,7 +7,7 @@
  *
  * Copyright (C) 2019  玫瑰视界网络科技有限公司
  */
- namespace Service\PurchaseOrder;
+ namespace Service\Order;
 
  use Service\Core\AbstractAPI;
 
