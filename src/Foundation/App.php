@@ -29,6 +29,7 @@ class App extends Container
      */
     protected $providers = [
         ServiceProviders\OrderServiceProvider::class,
+        ServiceProviders\GoodServiceProvider::class,
     ];
 
     public function __construct($app_env)

@@ -12,11 +12,12 @@
  use Service\Core\AbstractAPI;
 
 /**
- * Contact Contact
+ * Order 
  */
  Class Order extends AbstractAPI
  {
-     const PURCHASE_ORDER_DETAIL = '/purchase/getOrderDetail';
+     const PURCHASE_ORDER_DETAIL = '/purchase/getOrderDetail';//采购单详情
+     const PURCHASE_ORDER_LIST = '/purchase/getOrderList';//采购单列表
 
      const SERVICE = [
         'local' => '47.98.49.232:8011',
@@ -32,13 +33,23 @@
      }
 
      /**
-      * create contact
-      * @param   $contactInfo
-      * @return string contactId
+      * getOrderDetail
+      * @param   $param
+      * @return array
       */
-      public function getOrderDetail($param)
+      public function getOrderDetail(array $param)
       {
           return $this->parseJSON('post', [self::PURCHASE_ORDER_DETAIL,$param]);
+      }
+
+      /**
+      * getOrderDetail
+      * @param   $param
+      * @return array
+      */
+      public function getOrderList(array $param=[])
+      {
+          return $this->parseJSON('post', [self::PURCHASE_ORDER_LIST,$param]);
       }
 
  }
