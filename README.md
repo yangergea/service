@@ -1,7 +1,5 @@
 # service
 ole service
-
-示例：
 <?php
 
 use Service\Foundation\App;
