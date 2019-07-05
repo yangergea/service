@@ -1,4 +1,4 @@
-<?php
+    <?php
     use Service\Foundation\App;
 
     $app = new App(env('APP_ENV'));
