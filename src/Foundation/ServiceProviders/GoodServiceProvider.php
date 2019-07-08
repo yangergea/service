@@ -31,11 +31,7 @@ class GoodServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $Good = function ($pimple) {
-            return new Good($this->app_env);
-        };
-
-        $pimple['Good'] = $Good;
+        $pimple['Good'] = new Good($this->app_env);
     }
 
 }
