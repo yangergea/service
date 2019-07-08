@@ -1,2 +1,6 @@
 /.DS_Store
 /sftp-config.json
+composer.lock
+/vendor
+.env.example
+.env

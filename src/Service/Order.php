@@ -37,7 +37,7 @@
       * @param   $param
       * @return array
       */
-      public function getOrderDetail(array $param)
+      public function getOrderDetail(array $param = [])
       {
           return $this->parseJSON('post', [self::PURCHASE_ORDER_DETAIL,$param]);
       }

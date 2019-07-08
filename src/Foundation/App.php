@@ -10,10 +10,6 @@
 namespace Service\Foundation;
 
 use Service\Core\Http;
-use Monolog\Handler\HandlerInterface;
-use Monolog\Handler\NullHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 
